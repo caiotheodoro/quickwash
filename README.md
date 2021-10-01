@@ -16,6 +16,8 @@ lucaspedroso@alunos.utfpr.edu.br
 
 jlauber@alunos.utfpr.edu.br
 
+caio.2001@alunos.utfpr.edu.br
+
 Papéis dos membros da equipe:
 
 Jean Carlos Martins Miguel - Product Owner
