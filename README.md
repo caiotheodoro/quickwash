@@ -14,5 +14,7 @@ lucaseduardosilvapedroso@gmail.com
 jlauber@alunos.utfpr.edu.br
 
 Jean - Product Owner
+
 Lucas - Scrum Master
+
 Jonathan - Desenvolvedor
