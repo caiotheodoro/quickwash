@@ -11,11 +11,15 @@ Dependências: É somente necessário acesso ao site via internet.
 Contato dos membros da equipe:
 
 jeanm@alunos.utfpr.edu.br
+
 lucaseduardosilvapedroso@gmail.com
+
 jlauber@alunos.utfpr.edu.br
 
 Papéis dos membros da equipe:
 
 Jean Carlos Martins Miguel - Product Owner
+
 Lucas Eduardo Silva Pedroso- Scrum Master
+
 Jonathan de Gaspari Lauber - Desenvolvedor
