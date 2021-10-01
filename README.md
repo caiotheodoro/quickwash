@@ -20,6 +20,8 @@ caio.2001@alunos.utfpr.edu.br
 
 Papéis dos membros da equipe:
 
+Caio Eduardo Theodoro da Silva
+
 Jean Carlos Martins Miguel - Product Owner
 
 Lucas Eduardo Silva Pedroso- Scrum Master
