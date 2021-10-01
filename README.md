@@ -12,7 +12,7 @@ Contato dos membros da equipe:
 
 jeanm@alunos.utfpr.edu.br
 
-lucaseduardosilvapedroso@gmail.com
+lucaspedroso@alunos.utfpr.edu.br
 
 jlauber@alunos.utfpr.edu.br
 
