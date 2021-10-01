@@ -1,6 +1,6 @@
 # ProjetoIntegrador
 
-Nome do software:
+Nome do software: Quick Wash
 
 Descrição do software: Sistema para agendamento de serviços de lavagem de veículos.
 
