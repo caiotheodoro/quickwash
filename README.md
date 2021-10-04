@@ -6,7 +6,9 @@ Descrição do software: Sistema para agendamento de serviços de lavagem de ve�
 
 Principais requisitos: Agendamento online de serviços e sistema de pontuação.
 
-Dependências: É somente necessário acesso ao site via internet.
+Dependências: Stripe - API de pagamento, 
+
+É somente necessário acesso ao site via internet.
 
 Contato dos membros da equipe:
 
