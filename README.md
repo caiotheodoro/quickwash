@@ -29,3 +29,9 @@ Jean Carlos Martins Miguel - Product Owner
 Jonathan de Gaspari Lauber - Desenvolvedor
 
 Lucas Eduardo Silva Pedroso - Desenvolvedor
+
+
+# compilar
+
+front-end:  npm i e npm run dev
+back-end: npm i e npm run dev
