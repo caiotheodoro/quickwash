@@ -1,12 +1,11 @@
-import { Container, Box, useTheme, Theme, ThemeOptions, Button } from '@mui/material';
+import {  Box, Theme, Button } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
-import { theme } from '../../theme/index'
-import { ReactNode } from 'react';
 import Image from 'next/image'
 interface HeaderProps {
   onOpenNewTransactionModal: () => void;
 }
 
+ 
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,18 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// define interface to represent component props
-interface Props {
-  toggleTheme: () => void;
-  useDefaultTheme: boolean;
-  children: ReactNode;
-}
-
 export function Header({ onOpenNewTransactionModal }: HeaderProps) {
   const classes = useStyles();
 
-
-  const theme = useTheme();
 
   return (
     <header className={classes.container}>

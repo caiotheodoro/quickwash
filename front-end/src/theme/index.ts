@@ -20,6 +20,7 @@ export const theme = createTheme({
     },
     background: {
       default: '#f8f8f8',
+      paper: '#dfdfdf',
     },
     error: {
       main: '#E62E4D',

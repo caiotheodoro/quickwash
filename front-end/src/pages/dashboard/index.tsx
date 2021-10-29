@@ -1,6 +1,9 @@
 import { Header } from "../../components/Header";
 import { useState } from 'react';
 import Modal from 'react-modal';
+import { TransactionsProvider } from "../../hooks/useTransactions";
+import { Panel } from "../../components/Panel";
+import { NewWashModal } from "../../components/NewWashModal";
 
 
 
@@ -14,13 +17,17 @@ export default function Dashboard() {
     setIsNewTransactionModal(false);
   }
   return (
-    <>
+    <TransactionsProvider>
 
-      <Header onOpenNewTransactionModal={handleOpenNewTransactionModal} />
+    <Header onOpenNewTransactionModal={handleOpenNewTransactionModal} />
 
+    <Panel />
+   
+    <NewWashModal isOpen={isNewTransactionModal} 
+      onRequestClose={handleCloseNewTransactionModal}
+      />
 
-
-    </>
+  </TransactionsProvider>
   );
 }
 

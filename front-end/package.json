@@ -17,6 +17,7 @@
     "@stripe/stripe-js": "^1.19.1",
     "axios": "^0.24.0",
     "faunadb": "^4.4.1",
+    "miragejs": "^0.1.42",
     "next": "11.1.2",
     "next-auth": "^3.29.0",
     "react": "17.0.2",
