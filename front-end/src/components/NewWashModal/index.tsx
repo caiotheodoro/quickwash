@@ -1,25 +1,51 @@
-import Modal from 'react-modal';
-import { FormEvent, useState, useContext } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 import { useTransactions } from '../../hooks/useTransactions';
 import { createStyles, makeStyles } from '@mui/styles';
-import { Button, Input, Theme } from '@mui/material';
+import { Theme, Input, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import Image from 'next/image'
-
 
 interface NewTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
 }
 
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            flex: 1,
+            color: "#FFFFFF"
+        },
+        button: {
+
+            background: theme.palette.warning.main,
 
         },
-       
+        dialog: {
+            backgroundColor: theme.palette.primary.dark,
+        },
+        title: {
+            color: theme.palette.background.default,
+            backgroundColor: theme.palette.primary.dark,
+        },
+        inputs: {
+            padding: '2rem',
+            paddingLeft: '0',
+            
+        },
+        colorButtons: {
+            backgroundColor: theme.palette.background.default,
+            color: theme.palette.text.primary,
+
+        },
         input: {
             width: '100%',
             padding: '0 1.5rem',
@@ -41,160 +67,68 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginTop: '1rem',
             },
         },
-        submit: {
-            width: '100%',
-            padding: '0 1.5rem',
-            height: '4rem',
-            background: theme.palette.success.main,
-            color: '#FFF',
-            borderRadius: '0.25rem',
-            border: 0,
-            fontSize: '1rem',
-            marginTop: '1.5rem',
-            transition: 'filter 0.2s',
-            fontWeight: 600,
-            '&:hover': {
-                filter: 'brightness(0.9)',
-            },
-        },
-        type: {
-            margin: '1rem 0',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '0.5rem',
-        },
-        radiobox: {
-            height: '4rem',
-            border: '1px solid #d7d7d7',
-            borderRadius: '0.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            ' &:hover': {
-                borderColor: 'darken(0.1, "#d7d7d7")',
-            }
-        },
-        span: {
-            fontSize: '1rem',
-            color: theme.palette.primary.main,
-            display: 'inline-block',
-            marginLeft: '1rem',
-        },
-        close : {
-            position: 'absolute',
-            top: '1.5rem',
-            right: '1.5rem',
-            background: 'transparent',
-            border: 0,
-            transition: 'filter 0.2s',
-
-            '&:hover': {
-                filter: 'brightness(0.8)',
-            },
-        }
-
     })
 );
 
-
-export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
+export  function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
     const { createTransaction } = useTransactions();
     const classes = useStyles();
-    const [type, setType] = useState('normal');
-    const [title, setTitle] = useState('');
+    const [type, setType] = useState('Comum');
+    const [vehicle, setVehicle] = useState('');
     const [amount, setAmount] = useState(0);
+
 
     async function handleCreateNewTransaction(e: FormEvent) {
         e.preventDefault();
 
+
         await createTransaction({
-            title,
+            vehicle,
             amount,
             type,
         });
 
-        setTitle('');
+        setVehicle('');
         setAmount(0);
-        setType('deposit');
+        setType('Comum');
         onRequestClose();
     }
 
+    function handleTypeChange(type: string) {
+        setType(type); 
+        type === 'Comum' ? setAmount(50) : setAmount(75);
+
+    }
+
     return (
-        <Modal
-            style={{
-                    content: {
-                       width: '100%',
-                       maxWidth: '576px',
-                       background: '#FFF',
-                       padding: '3rem',
-                       position: 'relative',
-                       borderRadius: '0.24rem',
-                   },
-                   overlay: {
-                       background: 'rgba(0, 0, 0, 0.5)',
-                       position: 'fixed',
-                       top: 0,
-                       left: 0,
-                       right: 0,
-                       bottom: 0,
-                       display: 'flex',
-                       alignItems: 'center',
-                       justifyContent: 'center',
-                   },
-            }}
-            isOpen={isOpen}
-            onRequestClose={onRequestClose}
-            overlayClassName="react-modal-overlay"
-            className="react-modal-content">
-            <button type="button" className={classes.close}>
-                <img src={'close.svg'} alt="fechar" onClick={onRequestClose} width={20} height={20} />
-            </button>
-            <form onSubmit={handleCreateNewTransaction} >
-               
-                    <h2>Nova Lavagem</h2>
-               
-                <Input
-                    className={classes.input}
-                    placeholder="Título"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                />
-
-                <input
-                    className={classes.input}
-                    type="number"
-                    placeholder="Valor"
-                    value={amount}
-                    onChange={e => setAmount(Number(e.target.value))}
-                />
-                <Box className={classes.type}>
-                    <Button
-                        type="button"
-                        className={classes.radiobox}
-                        onClick={() => setType('normal')}
-
-                    >
-                        <img src={'basic.svg'} alt="Basico" width={100} height={100}/>
-                        <Box className={classes.span}>Normal</Box>
-                    </Button>
-                    <Button
-                        type="button"
-                        className={classes.radiobox}
-                        onClick={() => setType('premium')}
-                    >
-                        <img src={'premium.svg'} alt="Premium" width={100} height={100}/>
-                        <Box className={classes.span}>Premium</Box>
-                    </Button>
-                </Box>
-
-
-                <Button type="submit" className={classes.submit}>
-                    Cadastrar
-                </Button>
-            </form>
-
-        </Modal>
+        <div>
+            <Dialog open={isOpen} onClose={onRequestClose} >
+                <DialogTitle className={classes.title}>Nova Lavagem</DialogTitle>
+                <DialogContent className={classes.dialog}>
+                    <DialogContentText className={classes.title}>
+                        Insira os campos abaixo
+                    </DialogContentText>
+                    <Box >
+                        <Input
+                            className={classes.input + ' ' + classes.inputs}
+                            placeholder="Título"
+                            value={vehicle}
+                            onChange={e => setVehicle(e.target.value)}
+                        />
+                        <ButtonGroup disableElevation variant="contained" className={ classes.inputs}>
+                            <Button color={"secondary"} onClick={() => handleTypeChange('Comum')} className={ type == 'Comum' ? classes.button : ''}> Normal</Button>
+                            <Button color={"secondary"} onClick={() => handleTypeChange('Premium')} className={ type == 'Premium' ? classes.button : ''}>Premium</Button>
+                        </ButtonGroup>
+                        <Typography className={classes.title}>
+                        Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
+                        </Typography>
+                         
+                    </Box>
+                </DialogContent>
+                <DialogActions className={classes.dialog}>
+                    <Button onClick={handleCreateNewTransaction} color={"secondary"}>Enviar</Button>
+                </DialogActions>
+            </Dialog>
+        </div>
     );
 }
-
-

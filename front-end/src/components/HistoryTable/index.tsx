@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
             borderSpacing: '0.5rem',
         },
-        th : {
+        th: {
             color: theme.palette.text.primary,
             fontWeight: 400,
             padding: '1rem 2rem',
@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
             background: theme.palette.background.paper,
             color: theme.palette.text.primary,
             borderRadius: '0.25rem',
-    
+
             '&:first-child': {
                 color: theme.palette.primary.light,
             },
-          
-         },
+
+        },
     })
 );
 
@@ -56,6 +56,7 @@ export function TransactionsTable() {
             <Table className={classes.table}>
                 <TableHead className={classes.th}>
                     <TableRow>
+                        <TableCell>Veículo</TableCell>
                         <TableCell>Tipo de lavagem</TableCell>
                         <TableCell>Valor</TableCell>
                         <TableCell>Data</TableCell>
@@ -64,7 +65,8 @@ export function TransactionsTable() {
                 <TableBody>
                     {transactions.map(transaction => (
                         <TableRow key={transaction.id}>
-                            <TableCell>{transaction.title}</TableCell>
+                            <TableCell>{transaction.vehicle}</TableCell>
+                            <TableCell>{transaction.type}</TableCell>
                             <TableCell className={transaction.type}>
                                 {new Intl.NumberFormat('pt-BR',
                                     {

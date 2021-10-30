@@ -1,11 +1,11 @@
-import { Children, createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { api } from "../services/api";
 
 
 
 interface TransactionsTableProps {
     id: number;
-    title: string;
+    vehicle: string;
     amount: number;
     type: string;
     createdAt: string;
@@ -31,8 +31,9 @@ const TransactionsContext = createContext<TransactionsContextData>(
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const [transactions, setTransactions] = useState<TransactionsTableProps[]>([]);
+
     useEffect(() => {
-        api.get("transactions")
+        api.get("/transactions")
             .then(response => setTransactions(response.data.transactions));
     }, []);
 

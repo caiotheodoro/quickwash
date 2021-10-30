@@ -2,53 +2,13 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { Box, Typography, Container } from '@mui/material'
-import { createServer, Model } from 'miragejs'
 
-createServer({
 
-  models: {
-    transaction: Model,
-  },
 
-  seeds(server) {
-    server.db.loadData({
-      transactions:[
-        {
-          id: 1,
-          title: 'Transaction 1',
-          type: 'deposit',
-          amount: 100,
-          category: 'salary',
-          createdAt: new Date('2021-02-12 09:00:00'),
-        },
-        {
-          id: 2,
-          title: 'Transaction 2',
-          type: 'withdraw',
-          amount: 300,
-          category: 'food',
-          createdAt: new Date('2020-02-12 09:00:00'),
-        },]
-    });
-  },
-
-  routes() {
-    this.namespace = 'api';
-    this.get('/transactions', () => {
-      return this.schema.all('transaction');
-    });
-
-    this.post('/transactions', (schema, request) => {
-      const data = JSON.parse(request.requestBody);
-
-      
-      return schema.create('transaction', data);
-    })
-  }
-});
 
 const Home: NextPage = () => {
   return (
+    
     <div >
       <Head>
         <title>Create Next App</title>
