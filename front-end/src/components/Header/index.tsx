@@ -9,10 +9,7 @@ interface HeaderProps {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flex: 1,
-
-    },
+ 
     content: {
       maxWwidth: '1120px',
       margin: '0 auto',
