@@ -31,6 +31,7 @@ export const theme = createTheme({
     warning: {
       main: '#ffca28',
     },
+    divider: '#e0e0e0',
   },
 });
 

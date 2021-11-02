@@ -1,9 +1,8 @@
-import React from 'react';
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@mui/styles'; // works with @material-ui/core/styles, if you prefer to use it.
-import { theme } from '../theme/index'; // Adjust here as well
+import React from 'react';
+export default class MyDocument extends NextDocument {
 
-export default class MyDocument extends Document {
     render() {
         return (
             <Html lang="en">
@@ -11,7 +10,7 @@ export default class MyDocument extends Document {
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" />
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
-                    <meta name="theme-color" content={theme.palette.primary.main} />
+                    <meta charSet="utf-8" />
                     <style jsx global>{`
                         body{
                             margin: 0px;
@@ -28,9 +27,6 @@ export default class MyDocument extends Document {
         );
     }
 }
-
-// `getInitialProps` belongs to `_document` (instead of `_app`),
-// it's compatible with server-side generation (SSG).
 MyDocument.getInitialProps = async (ctx) => {
     // Resolution order
     //
@@ -63,7 +59,7 @@ MyDocument.getInitialProps = async (ctx) => {
             enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
         });
 
-    const initialProps = await Document.getInitialProps(ctx);
+    const initialProps = await NextDocument.getInitialProps(ctx);
 
     return {
         ...initialProps,
