@@ -1,22 +1,19 @@
 import { useState, useEffect, FormEvent } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import ButtonGroup from '@mui/material/ButtonGroup';
+
+import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
 
 import { useTransactions } from '../../hooks/useTransactions';
 import { createStyles, makeStyles } from '@mui/styles';
-import { Theme, Input, Typography } from '@mui/material';
+import { Theme, Input, Typography, TextField, Dialog, Button, Autocomplete, DialogContent, DialogActions, ButtonGroup, DialogTitle, DialogContentText } from '@mui/material';
 import { Box } from '@mui/system';
-
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+const options = ['Carro', 'Moto', 'Caminhão', 'Outros'];
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 interface NewTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
 }
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,22 +36,28 @@ const useStyles = makeStyles((theme: Theme) =>
         inputs: {
             padding: '2rem',
             paddingLeft: '0',
-            
+
         },
         colorButtons: {
             backgroundColor: theme.palette.background.default,
             color: theme.palette.text.primary,
 
         },
+        autocomplete: {
+            background: '#e7e9ee',
+            color: theme.palette.text.primary,
+            marginTop: '1rem',
+            borderRadius: '0.25rem',
+
+        },
         input: {
             width: '100%',
             padding: '0 1.5rem',
-            height: '4rem',
+            height: '3.5rem',
             borderRadius: '0.25rem',
 
-            border: '1px solid #d7d7d7',
             background: '#e7e9ee',
-
+            marginTop: '1rem',
             fontWeight: 400,
             fontSize: '1rem',
             transition: 'border-color 0.2s',
@@ -70,22 +73,36 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export  function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
+export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
     const { createTransaction } = useTransactions();
     const classes = useStyles();
-    const [type, setType] = useState('Comum');
-    const [vehicle, setVehicle] = useState('');
+    const [inputValue, setInputValue] = useState<string>('');
+    
+    
     const [amount, setAmount] = useState(0);
-
+    const [type, setType] = useState('Comum');
+    const [scheduleDate, setScheduleDate] = useState<Date>(new Date('2021-11-02T00:00:00.000Z'));
+    const [vehicle, setVehicle] = useState('');
+    const [observation, setObservation] = useState('');
+    const [plate, setPlate] = useState('');
+    const [payment, setPayment] = useState<'cash' | 'card'>('cash');
+    const [vehicleType, setVehicleType] = useState<'Carro' | 'Moto' | 'Caminhão' | 'Outros'>('Carro');
+    const [coupon, setCoupon] = useState('');
 
     async function handleCreateNewTransaction(e: FormEvent) {
         e.preventDefault();
 
 
         await createTransaction({
+            type,
             vehicle,
             amount,
-            type,
+            plate,
+            observation,
+            scheduleDate,
+            coupon,
+            payment,
+            vehicleType,
         });
 
         setVehicle('');
@@ -95,40 +112,86 @@ export  function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalPro
     }
 
     function handleTypeChange(type: string) {
-        setType(type); 
+        setType(type);
         type === 'Comum' ? setAmount(50) : setAmount(75);
 
     }
 
+
     return (
         <div>
-            <Dialog open={isOpen} onClose={onRequestClose} >
-                <DialogTitle className={classes.title}>Nova Lavagem</DialogTitle>
-                <DialogContent className={classes.dialog}>
-                    <DialogContentText className={classes.title}>
-                        Insira os campos abaixo
-                    </DialogContentText>
-                    <Box >
-                        <Input
-                            className={classes.input + ' ' + classes.inputs}
-                            placeholder="Título"
-                            value={vehicle}
-                            onChange={e => setVehicle(e.target.value)}
-                        />
-                        <ButtonGroup disableElevation variant="contained" className={ classes.inputs}>
-                            <Button color={"secondary"} onClick={() => handleTypeChange('Comum')} className={ type == 'Comum' ? classes.button : ''}> Normal</Button>
-                            <Button color={"secondary"} onClick={() => handleTypeChange('Premium')} className={ type == 'Premium' ? classes.button : ''}>Premium</Button>
-                        </ButtonGroup>
-                        <Typography className={classes.title}>
-                        Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
-                        </Typography>
-                         
-                    </Box>
-                </DialogContent>
-                <DialogActions className={classes.dialog}>
-                    <Button onClick={handleCreateNewTransaction} color={"secondary"}>Enviar</Button>
-                </DialogActions>
-            </Dialog>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Dialog open={isOpen} onClose={onRequestClose} >
+                    <DialogTitle className={classes.title}>Nova Lavagem</DialogTitle>
+                    <DialogContent className={classes.dialog}>
+                        <DialogContentText className={classes.title}>
+                            Insira os campos abaixo
+                        </DialogContentText>
+                        <Box >
+                            <Autocomplete
+                                value={vehicleType}
+                                onChange={(e, inputValue) => {
+                                    setVehicleType(inputValue);
+                                }}
+                                inputValue={inputValue}
+                                className={classes.autocomplete}
+                                onInputChange={(event, newInputValue) => {
+                                    setInputValue(newInputValue);
+                                }}
+                                options={options}
+                                renderInput={(params) => <TextField {...params} placeholder="Tipo de veículo" sx={{ color: '#000' }} />}
+                            />
+                            <Input
+                                className={classes.input + ' ' + classes.inputs}
+                                placeholder="Modelo"
+                                value={vehicle}
+                                onChange={e => setVehicle(e.target.value)}
+                            />
+                            <Input
+                                className={classes.input + ' ' + classes.inputs}
+                                placeholder="Placa"
+                                value={plate}
+                                onChange={e => setPlate(e.target.value)}
+                            />
+                            <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
+                                <Button color={"secondary"} onClick={() => handleTypeChange('Comum')} className={type == 'Comum' ? classes.button : ''}> Normal</Button>
+                                <Button color={"secondary"} onClick={() => handleTypeChange('Premium')} className={type == 'Premium' ? classes.button : ''}>Premium</Button>
+                            </ButtonGroup>
+                            <Typography className={classes.title}>
+                                Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
+                            </Typography>
+                            <DesktopDateTimePicker
+                                value={scheduleDate}
+                                views={['month', 'day', 'hours']}
+                                className={classes.input + ' ' + classes.inputs + '' + classes.autocomplete}
+                                onChange={(newValue) => {
+                                    setScheduleDate(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                               <Input
+                                className={classes.input + ' ' + classes.inputs}
+                                placeholder="Observações"
+                                value={observation}
+                                onChange={e => setObservation(e.target.value)}
+                            />
+                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
+                                <Button color={"secondary"} onClick={() => setPayment('cash')} className={payment == 'cash' ? classes.button : ''}> Dinheiro</Button>
+                                <Button color={"secondary"} onClick={() => setPayment('card')} className={payment == 'card' ? classes.button : ''}>Cartão</Button>
+                            </ButtonGroup>
+                            <Input
+                                className={classes.input + ' ' + classes.inputs}
+                                placeholder="Cupom de desconto"
+                                value={coupon}
+                                onChange={e => setCoupon(e.target.value)}
+                            />
+                        </Box>
+                    </DialogContent>
+                    <DialogActions className={classes.dialog}>
+                        <Button onClick={handleCreateNewTransaction} color={"secondary"}>Enviar</Button>
+                    </DialogActions>
+                </Dialog>
+            </LocalizationProvider>
         </div>
     );
 }

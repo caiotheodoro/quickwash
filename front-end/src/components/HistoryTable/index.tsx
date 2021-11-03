@@ -1,6 +1,7 @@
 
-import { Table, TableBody, TableCell, TableHead, TableRow, Theme, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableHead, TableRow, Theme, Box, TextField } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
+import { format } from "path";
 import { useTransactions } from "../../hooks/useTransactions";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -59,13 +60,14 @@ export function TransactionsTable() {
                         <TableCell>Veículo</TableCell>
                         <TableCell>Tipo de lavagem</TableCell>
                         <TableCell>Valor</TableCell>
-                        <TableCell>Data</TableCell>
+                        <TableCell>Data agendamento</TableCell>
+                        <TableCell>Data solicitação</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {transactions.map(transaction => (
                         <TableRow key={transaction.id}>
-                            <TableCell>{transaction.vehicle}</TableCell>
+                            <TableCell>{transaction.vehicle + '-' + transaction.plate}</TableCell>
                             <TableCell>{transaction.type}</TableCell>
                             <TableCell className={transaction.type}>
                                 {new Intl.NumberFormat('pt-BR',
@@ -74,6 +76,12 @@ export function TransactionsTable() {
                                         currency: 'BRL'
                                     }).format(transaction.amount)}
 
+                            </TableCell>
+                            <TableCell> 
+                            { 
+                                new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.scheduleDate))
+                            }
+                           
                             </TableCell>
                             <TableCell>  {new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.createdAt))}</TableCell>
                         </TableRow>

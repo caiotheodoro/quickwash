@@ -21,16 +21,28 @@ createServer({
           id: 1,
           vehicle: 'Astra',
           type: 'Premium',
-          amount: 100,
+          amount: 75,
+          plate: 'ABC1234',
+          observation: '',
+          scheduleDate: new Date('2021-02-12 09:00:00'),
+          coupon: '',
+          payment: 'card',
+          vehicleType: 'Carro',
           createdAt: new Date('2021-02-12 09:00:00'),
         },
         
         {
           id: 2,
-          vehicle: 'Gol',
-          type: 'Comum',
-          amount: 300,
-          createdAt: new Date('2020-02-12 09:00:00'),
+          vehicle: 'Astra',
+          type: 'Premium',
+          amount: 50,
+          plate: 'ADS1234',
+          observation: '',
+          scheduleDate: new Date('2021-02-12 09:00:00'),
+          coupon: '',
+          payment: 'card',
+          vehicleType: 'Carro',
+          createdAt: new Date('2021-02-12 09:00:00'),
         },]
     });
   },
@@ -41,11 +53,8 @@ createServer({
       return this.schema.all('transaction');
     });
 
-
     this.post('/transactions', (schema, request) => {
       const data = JSON.parse(request.requestBody);
-
-
       return schema.create('transaction', data);
     })
   }

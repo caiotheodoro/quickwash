@@ -5,11 +5,16 @@ import { api } from "../services/api";
 
 interface TransactionsTableProps {
     id: number;
-    title: string;
+    vehicle: string;
     amount: number;
-    category: string;
     type: string;
     createdAt: string;
+    plate: string,
+    observation: string,
+    scheduleDate: Date,
+    coupon: string,
+    payment: 'card' | 'cash',
+    vehicleType: 'Carro' | 'Moto' | 'Caminhão' | 'Outros',
 
 }
 
@@ -40,11 +45,11 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     async function createTransaction(transactionInput: TransactionInput) {
 
         const response = await api.post('/transactions', {...transactionInput, createdAt: new Date().toISOString()});
-        const { transaction } = response.data;
+        const transct : TransactionsTableProps = response.data.transaction;
 
         setTransactions([
             ...transactions,
-            transaction
+            transct
         ]);
     }
 
