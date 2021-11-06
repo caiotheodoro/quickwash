@@ -39,11 +39,11 @@ export default function Home({product} : HomeProps) {
         <title>Home | QuickWash</title>
       </Head>
       <Header />
-      <Footer />
       <React.Fragment>
       <ProductCategories />
       <ProductHowItWorks />
       <ServiceAddress />
+      <Footer />
     </React.Fragment>
     </>
   )

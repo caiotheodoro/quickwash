@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
     footer: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100vh',
+      minHeight: '10vh',
     },
     footerContent: {
       py: 3,
