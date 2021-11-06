@@ -1,3 +1,8 @@
+import * as React from 'react';
+import ProductCategories from '../components/Views/ProductCategories';
+import ProductHowItWorks from '../components/Views/ProductHowItWorks';
+import ServiceAddress from '../components/Views/ServiceAddress';
+import withRoot from '../components/withRoot';
 import Head from 'next/head'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer';
@@ -35,7 +40,11 @@ export default function Home({product} : HomeProps) {
       </Head>
       <Header />
       <Footer />
+      <React.Fragment>
+      <ProductCategories />
+      <ProductHowItWorks />
+      <ServiceAddress />
+    </React.Fragment>
     </>
   )
 }
-
