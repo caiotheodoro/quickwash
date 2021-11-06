@@ -67,14 +67,14 @@ export function TransactionsTable() {
                 <TableBody>
                     {transactions.map(transaction => (
                         <TableRow key={transaction.id}>
-                            <TableCell>{transaction.vehicle + '-' + transaction.plate}</TableCell>
+                            <TableCell>{transaction.vehicle + ' - ' + transaction.plate}</TableCell>
                             <TableCell>{transaction.type}</TableCell>
                             <TableCell className={transaction.type}>
                                 {new Intl.NumberFormat('pt-BR',
                                     {
                                         style: 'currency',
                                         currency: 'BRL'
-                                    }).format(transaction.amount)}
+                                    }).format(transaction.amount) + ' - ' +  (transaction.payment === 'cash' ? 'Dinheiro' : 'Cartão') }
 
                             </TableCell>
                             <TableCell> 

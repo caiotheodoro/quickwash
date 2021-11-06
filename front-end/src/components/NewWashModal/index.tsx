@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 
 import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
 
@@ -9,6 +9,11 @@ import { Box } from '@mui/system';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 const options = ['Carro', 'Moto', 'Caminhão', 'Outros'];
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+
+import { signIn, useSession } from 'next-auth/client';
+import { api } from '../../services/api';
+import { getStripeJs } from '../../services/stripe-js';
+import { useRouter } from 'next/router';
 interface NewTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
@@ -22,8 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
             color: "#FFFFFF"
         },
         button: {
-
-            background: theme.palette.warning.main,
+            backgroundColor: theme.palette.primary.main,
 
         },
         dialog: {
@@ -73,18 +77,24 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
+
+
+
+
 export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
     const { createTransaction } = useTransactions();
     const classes = useStyles();
     const [inputValue, setInputValue] = useState<string>('');
-    
-    
+    const [sessions] = useSession();
+    const router = useRouter();
+
     const [amount, setAmount] = useState(0);
     const [type, setType] = useState('Comum');
     const [scheduleDate, setScheduleDate] = useState<Date>(new Date('2021-11-02T00:00:00.000Z'));
     const [vehicle, setVehicle] = useState('');
     const [observation, setObservation] = useState('');
     const [plate, setPlate] = useState('');
+    const [price, setPrice] = useState('price_1JstmdDqVzUtyqwcfb0fiV98');
     const [payment, setPayment] = useState<'cash' | 'card'>('cash');
     const [vehicleType, setVehicleType] = useState<'Carro' | 'Moto' | 'Caminhão' | 'Outros'>('Carro');
     const [coupon, setCoupon] = useState('');
@@ -111,9 +121,11 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
         onRequestClose();
     }
 
-    function handleTypeChange(type: string) {
+    async function handleTypeChange(type: string) {
         setType(type);
         type === 'Comum' ? setAmount(50) : setAmount(75);
+        setPrice(type === 'Comum' ? 'price_1JstmdDqVzUtyqwcfb0fiV98' : 'price_1JstmdDqVzUtyqwcpGu1Qkz5');
+
 
     }
 
@@ -130,7 +142,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                         <Box >
                             <Autocomplete
                                 value={vehicleType}
-                                onChange={(e, inputValue) => {
+                                onChange={(inputValue) => {
                                     setVehicleType(inputValue);
                                 }}
                                 inputValue={inputValue}
@@ -154,8 +166,8 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 onChange={e => setPlate(e.target.value)}
                             />
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
-                                <Button color={"secondary"} onClick={() => handleTypeChange('Comum')} className={type == 'Comum' ? classes.button : ''}> Normal</Button>
-                                <Button color={"secondary"} onClick={() => handleTypeChange('Premium')} className={type == 'Premium' ? classes.button : ''}>Premium</Button>
+                                <Button color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} className={type == 'Comum' ? classes.button : ''}> Normal</Button>
+                                <Button color={type != 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Premium')} className={type == 'Premium' ? classes.button : ''}>Premium</Button>
                             </ButtonGroup>
                             <Typography className={classes.title}>
                                 Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
@@ -167,17 +179,19 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 onChange={(newValue) => {
                                     setScheduleDate(newValue);
                                 }}
-                                renderInput={(params) => <TextField {...params} />}
+
+
+                                renderInput={(params) => <TextField {...params} className={classes.input} />}
                             />
-                               <Input
+                            <Input
                                 className={classes.input + ' ' + classes.inputs}
                                 placeholder="Observações"
                                 value={observation}
                                 onChange={e => setObservation(e.target.value)}
                             />
-                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
-                                <Button color={"secondary"} onClick={() => setPayment('cash')} className={payment == 'cash' ? classes.button : ''}> Dinheiro</Button>
-                                <Button color={"secondary"} onClick={() => setPayment('card')} className={payment == 'card' ? classes.button : ''}>Cartão</Button>
+                            <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
+                                <Button color={payment == 'cash' ? "warning" : "secondary"} onClick={() => setPayment('cash')} className={payment == 'cash' ? classes.button : ''}> Dinheiro</Button>
+                                <Button color={payment == 'card' ? "warning" : "secondary"} onClick={() => setPayment('card')} className={payment == 'card' ? classes.button : ''}>Cartão</Button>
                             </ButtonGroup>
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
@@ -188,10 +202,11 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                         </Box>
                     </DialogContent>
                     <DialogActions className={classes.dialog}>
-                        <Button onClick={handleCreateNewTransaction} color={"secondary"}>Enviar</Button>
+                        <Button onClick={handleCreateNewTransaction} color={"secondary"}>Realizar pagamento</Button>
                     </DialogActions>
                 </Dialog>
             </LocalizationProvider>
         </div>
     );
 }
+

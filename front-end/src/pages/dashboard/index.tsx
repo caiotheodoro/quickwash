@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { TransactionsProvider } from "../../hooks/useTransactions";
 import { Panel } from "../../components/Panel";
 import { NewWashModal } from "../../components/NewWashModal";
-import { useSession } from "next-auth/client";
+import { getSession, useSession } from "next-auth/client";
 import { useRouter } from 'next/router';
 import { createServer, Model } from 'miragejs'
+import { GetServerSideProps } from "next";
 
 
 createServer({
@@ -81,6 +82,7 @@ export default function Dashboard() {
 
       <NewWashModal isOpen={isNewTransactionModal}
         onRequestClose={handleCloseNewTransactionModal}
+      
       />
 
     </TransactionsProvider>
