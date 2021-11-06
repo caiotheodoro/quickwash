@@ -1,7 +1,9 @@
 import Head from 'next/head'
 import { Header } from '../components/Header'
+import { Footer } from '../components/Footer';
 import { createStyles, makeStyles } from '@mui/styles'
 import { Theme } from '@mui/material'
+
 interface HomeProps {
   product: {
     priceId: string,
@@ -32,9 +34,7 @@ export default function Home({product} : HomeProps) {
         <title>Home | QuickWash</title>
       </Head>
       <Header />
-      <main className={classes.contentContainer}>
-     
-      </main>
+      <Footer />
     </>
   )
 }

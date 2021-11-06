@@ -10,7 +10,7 @@ interface HeaderProps {
   onOpenNewTransactionModal: () => void;
 }
 
- 
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
