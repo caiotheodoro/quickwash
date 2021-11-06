@@ -1,3 +1,8 @@
+import * as React from 'react';
+import ProductCategories from '../components/Views/ProductCategories';
+import ProductHowItWorks from '../components/Views/ProductHowItWorks';
+import ServiceAddress from '../components/Views/ServiceAddress';
+import withRoot from '../components/withRoot';
 import Head from 'next/head'
 import { Header } from '../components/Header'
 import { createStyles, makeStyles } from '@mui/styles'
@@ -32,10 +37,11 @@ export default function Home({product} : HomeProps) {
         <title>Home | QuickWash</title>
       </Head>
       <Header />
-      <main className={classes.contentContainer}>
-     
-      </main>
+      <React.Fragment>
+      <ProductCategories />
+      <ProductHowItWorks />
+      <ServiceAddress />
+    </React.Fragment>
     </>
   )
 }
-
