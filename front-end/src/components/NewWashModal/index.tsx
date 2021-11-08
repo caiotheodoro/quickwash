@@ -166,8 +166,8 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 onChange={e => setPlate(e.target.value)}
                             />
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
-                                <Button color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} className={type == 'Comum' ? classes.button : ''}> Normal</Button>
-                                <Button color={type != 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Premium')} className={type == 'Premium' ? classes.button : ''}>Premium</Button>
+                                <Button color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} > Normal</Button>
+                                <Button color={type != 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Premium')} >Premium</Button>
                             </ButtonGroup>
                             <Typography className={classes.title}>
                                 Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
@@ -175,13 +175,13 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                             <DesktopDateTimePicker
                                 value={scheduleDate}
                                 views={['month', 'day', 'hours']}
-                                className={classes.input + ' ' + classes.inputs + '' + classes.autocomplete}
+                                className={ classes.inputs + '' + classes.autocomplete}
                                 onChange={(newValue) => {
                                     setScheduleDate(newValue);
                                 }}
 
 
-                                renderInput={(params) => <TextField {...params} className={classes.input} />}
+                                renderInput={(params) => <TextField {...params} className={classes.autocomplete} />}
                             />
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
@@ -190,8 +190,8 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 onChange={e => setObservation(e.target.value)}
                             />
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
-                                <Button color={payment == 'cash' ? "warning" : "secondary"} onClick={() => setPayment('cash')} className={payment == 'cash' ? classes.button : ''}> Dinheiro</Button>
-                                <Button color={payment == 'card' ? "warning" : "secondary"} onClick={() => setPayment('card')} className={payment == 'card' ? classes.button : ''}>Cartão</Button>
+                                <Button color={payment == 'cash' ? "warning" : "secondary"} onClick={() => setPayment('cash')} > Dinheiro</Button>
+                                <Button color={payment == 'card' ? "warning" : "secondary"} onClick={() => setPayment('card')} >Cartão</Button>
                             </ButtonGroup>
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
