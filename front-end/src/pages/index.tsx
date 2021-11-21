@@ -53,7 +53,7 @@ export default function Home({product} : HomeProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => { //carrega a pagina uma vez de acordo com o revalidade.
-  const price =  await stripe.prices.retrieve("price_1JfwXgDqVzUtyqwcW7Fi20ip"/*, {
+  const price =  await stripe.prices.retrieve("price_1JyP5fDqVzUtyqwcK7kJZdu8"/*, {
     expand: ['product']
   }*/)
 

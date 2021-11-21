@@ -87,13 +87,13 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     const [session] = useSession();
     const router = useRouter();
 
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState(50);
     const [type, setType] = useState('Comum');
     const [scheduleDate, setScheduleDate] = useState<Date>(new Date('2021-11-02T00:00:00.000Z'));
     const [vehicle, setVehicle] = useState('');
     const [observation, setObservation] = useState('');
     const [plate, setPlate] = useState('');
-    const [price, setPrice] = useState('price_1JstmdDqVzUtyqwcfb0fiV98');
+    const [price, setPrice] = useState('price_1JyP5fDqVzUtyqwcK7kJZdu8');
     const [payment, setPayment] = useState<'cash' | 'card'>('cash');
     const [vehicleType, setVehicleType] = useState<'Carro' | 'Moto' | 'Caminhão' | 'Outros'>('Carro');
     const [coupon, setCoupon] = useState('');
