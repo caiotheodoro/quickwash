@@ -53,20 +53,41 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           case 'customer.subscription.updated':
           case 'customer.subscription.deleted':
             const subscription = event.data.object as Stripe.Subscription;
+            console.log("subscription", subscription)
             await saveSubscription(
               subscription.id,
               subscription.customer.toString(),
-              false
+              false,
+              subscription.metadata.vehicle,
+              Number(subscription.metadata.amount),
+              subscription.metadata.type,
+              subscription.metadata.createdAt,
+              subscription.metadata.plate,
+              subscription.metadata.observation,
+              subscription.metadata.scheduleDate,
+              subscription.metadata.coupon,
+              subscription.metadata.payment,
+              subscription.metadata.vehicleType
             )
             break;
           case 'checkout.session.completed':
 
             const checkoutSession = event.data.object as Stripe.Checkout.Session;
-
+              console.log("checkoutSession", checkoutSession)
             await saveSubscription(
               checkoutSession.subscription.toString(),
               checkoutSession.customer.toString(),
-              true
+              true,
+              checkoutSession.metadata.vehicle,
+              Number(checkoutSession.metadata.amount),
+              checkoutSession.metadata.type,
+              checkoutSession.metadata.createdAt,
+              checkoutSession.metadata.plate,
+              checkoutSession.metadata.observation,
+              checkoutSession.metadata.scheduleDate,
+              checkoutSession.metadata.coupon,
+              checkoutSession.metadata.payment,
+              checkoutSession.metadata.vehicleType
             )
 
             break;

@@ -2,7 +2,9 @@
 import { Table, TableBody, TableCell, TableHead, TableRow, Theme, Box, TextField } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { format } from "path";
+import { useEffect, useState } from "react";
 import { useTransactions } from "../../hooks/useTransactions";
+import { api } from "../../services/api";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,9 +51,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export function TransactionsTable() {
     const classes = useStyles();
-    const { transactions } = useTransactions();
+    const { retrieveTransaction } = useTransactions();
+    const [transactions,setTransactions ] = useState();
 
-
+    useEffect(() => {
+        (
+            async () => {
+                const response = await api.get('/subscribe')
+                console.log(response);
+            }
+        )
+    
+    }, []);
+    
     return (
         <Box className={classes.container}>
             <Table className={classes.table}>
@@ -65,7 +77,7 @@ export function TransactionsTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {transactions.map(transaction => (
+                    {/*transactions.map(transaction => (
                         <TableRow key={transaction.id}>
                             <TableCell>{transaction.vehicle + ' - ' + transaction.plate}</TableCell>
                             <TableCell>{transaction.type}</TableCell>
@@ -85,8 +97,8 @@ export function TransactionsTable() {
                             </TableCell>
                             <TableCell>  {new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.createdAt))}</TableCell>
                         </TableRow>
-                    ))}
-
+                        ))*/}
+                
                 </TableBody>
             </Table>
         </Box>

@@ -4,7 +4,18 @@ import { stripe } from "../../../services/stripe";
 export async function saveSubscription(
   subscriptionId: string,
   customerId: string,
-  createAction = false
+  createAction = false,
+  vehicle: string,
+  amount: number,
+  type: string,
+  createdAt: string,
+  plate: string,
+  observation: string,
+  scheduleDate: string,
+  coupon: string,
+  payment: string,
+  vehicleType: string,
+
 ) {
   const userRef = await fauna.query(
     q.Select(
@@ -27,6 +38,16 @@ export async function saveSubscription(
     userId: userRef,
     status: subscription.status,
     price_id: subscription.items.data[0].price.id,
+    vehicle: subscription.metadata.vehicle,
+    amount: subscription.metadata.amount,
+    type: subscription.metadata.type,
+    createdAt: subscription.metadata.createdAt,
+    plate: subscription.metadata.plate,
+    observation: subscription.metadata.observation,
+    scheduleDate: subscription.metadata.scheduleDate,
+    coupon: subscription.metadata.coupon,
+    payment: subscription.metadata.payment,
+    vehicleType: subscription.metadata.vehicleType
   }
 
   if (createAction) {

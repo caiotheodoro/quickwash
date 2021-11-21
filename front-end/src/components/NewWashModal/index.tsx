@@ -110,11 +110,38 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
      
         
         try {
-            const response = await api.post('/subscribe')
+
+            //const response = await api.post('/subscribe')
+
+            const response = await api.post('/subscribe', {type,
+                vehicle,
+                amount,
+                plate,
+                observation,
+                scheduleDate,
+                coupon,
+                payment,
+                price,
+                vehicleType, createdAt: new Date().toISOString()});
+
+          /*  await createTransaction({
+                type,
+                vehicle,
+                amount,
+                plate,
+                observation,
+                scheduleDate,
+                coupon,
+                payment,
+                vehicleType,
+            });
+            */
+
+
 
             const { sessionId } = response.data;
             const stripe = await getStripeJs()
-
+            console.log("stripe", stripe);
             await stripe.redirectToCheckout({ sessionId })
             
         } catch (err) {
@@ -122,17 +149,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
             alert(err.message);
         }
 
-    /*    await createTransaction({
-            type,
-            vehicle,
-            amount,
-            plate,
-            observation,
-            scheduleDate,
-            coupon,
-            payment,
-            vehicleType,
-        });*/
+        
 
 
         setVehicle('');
@@ -144,7 +161,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     async function handleTypeChange(type: string) {
         setType(type);
         type === 'Comum' ? setAmount(50) : setAmount(75);
-        setPrice(type === 'Comum' ? 'price_1JstmdDqVzUtyqwcfb0fiV98' : 'price_1JstmdDqVzUtyqwcpGu1Qkz5');
+        setPrice(type === 'Comum' ? 'price_1JyP5fDqVzUtyqwcK7kJZdu8' : 'price_1JyP5fDqVzUtyqwcPBqfPQJf');
 
 
     }

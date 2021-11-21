@@ -22,6 +22,9 @@ export default function Dashboard() {
   function handleCloseNewTransactionModal() {
     setIsNewTransactionModal(false);
   }
+
+
+
   return (
     <TransactionsProvider>
 

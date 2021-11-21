@@ -19,6 +19,7 @@ interface TransactionsTableProps {
 }
 
 
+
 type TransactionInput = Omit<TransactionsTableProps, "id" | 'createdAt'>;
 
 
@@ -29,6 +30,7 @@ interface TransactionsProviderProps {
 interface TransactionsContextData {
     transactions: TransactionsTableProps[];
     createTransaction: (transaction: TransactionInput) => Promise<void>;
+    retrieveTransaction: (userId: string) => Promise<void>;
 }
 
 const TransactionsContext = createContext<TransactionsContextData>(
@@ -38,16 +40,15 @@ const TransactionsContext = createContext<TransactionsContextData>(
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const [transactions, setTransactions] = useState<TransactionsTableProps[]>([]);
     const [soma,setSoma] = useState(0);
-/*
-    useEffect(() => {
-        api.get("transactions")
-            .then(response => setTransactions(response.data.transactions));
-    }, []);*/
+
+
 
     async function createTransaction(transactionInput: TransactionInput) {
 
+        
         const response = await api.post('/subscribe', {...transactionInput, createdAt: new Date().toISOString()});
         
+        console.log(response);
        // const transct : TransactionsTableProps = response.data.transaction;
 
       //  setTransactions([
@@ -56,8 +57,16 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
        // ]);
     }
 
+    async function retrieveTransaction(userId: string) {
+
+        const response = await api.get('/subscribe');
+        console.log(response);
+        console.log(userId)
+  
+    }
+
     return (
-        <TransactionsContext.Provider value={{ transactions, createTransaction }}>
+        <TransactionsContext.Provider value={{ transactions, createTransaction, retrieveTransaction }}>
             {children}
         </TransactionsContext.Provider>
     );
