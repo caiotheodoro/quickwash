@@ -35,30 +35,35 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export function SubscribeButton({ priceId }: SubscribeButtonProps) {
-    const [sessions] = useSession();
+    const [session] = useSession();
     const router = useRouter();
     const classes = useStyles();
 
-    const handleSubscribe = async () => {
-        if(!sessions) {
+    
+    async function handleSubscribe() {
+        if (!session) {
             signIn('google');
-            return;
+            return
         }
 
-        if(sessions.activeSubscription) {
-            router.push('/posts')
-            return;
+        if(session.activeSubscription) {
+            router.push('/dashboard');
+            return
         }
-
+        
         try {
-            const response = await api.post('subscribe', {})
-            const { sessionId } = response.data;
+            const response = await api.post('/subscribe')
 
-            const stripe = await getStripeJs();
-            stripe.redirectToCheckout({ sessionId })
+            const { sessionId } = response.data;
+            const stripe = await getStripeJs()
+
+            await stripe.redirectToCheckout({ sessionId })
+            
         } catch (err) {
+            console.log(err)
             alert(err.message);
         }
+
     }
 
     return(

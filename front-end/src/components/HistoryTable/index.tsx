@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export function TransactionsTable() {
     const classes = useStyles();
-    const { transactions } = useTransactions();;
+    const { transactions } = useTransactions();
 
 
     return (

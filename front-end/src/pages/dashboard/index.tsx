@@ -6,60 +6,9 @@ import { NewWashModal } from "../../components/NewWashModal";
 import { getSession, useSession } from "next-auth/client";
 import { useRouter } from 'next/router';
 import { createServer, Model } from 'miragejs'
-import { GetServerSideProps } from "next";
 
 
-createServer({
 
-  models: {
-    transaction: Model,
-  },
-
-  seeds(server) {
-    server.db.loadData({
-      transactions: [
-        {
-          id: 1,
-          vehicle: 'Astra',
-          type: 'Premium',
-          amount: 75,
-          plate: 'ABC1234',
-          observation: '',
-          scheduleDate: new Date('2021-02-12 09:00:00'),
-          coupon: '',
-          payment: 'card',
-          vehicleType: 'Carro',
-          createdAt: new Date('2021-02-12 09:00:00'),
-        },
-        
-        {
-          id: 2,
-          vehicle: 'Astra',
-          type: 'Premium',
-          amount: 50,
-          plate: 'ADS1234',
-          observation: '',
-          scheduleDate: new Date('2021-02-12 09:00:00'),
-          coupon: '',
-          payment: 'card',
-          vehicleType: 'Carro',
-          createdAt: new Date('2021-02-12 09:00:00'),
-        },]
-    });
-  },
-
-  routes() {
-    this.namespace = 'api';
-    this.get('/transactions', () => {
-      return this.schema.all('transaction');
-    });
-
-    this.post('/transactions', (schema, request) => {
-      const data = JSON.parse(request.requestBody);
-      return schema.create('transaction', data);
-    })
-  }
-});
 
 
 export default function Dashboard() {
@@ -88,5 +37,6 @@ export default function Dashboard() {
     </TransactionsProvider>
   );
 }
+
 
 

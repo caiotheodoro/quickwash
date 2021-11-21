@@ -1,4 +1,4 @@
-import { query as db } from 'faunadb'
+import { query as q } from 'faunadb'
 
 import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
@@ -17,22 +17,22 @@ export default NextAuth({
     async session(session) {
       try {
         const userActiveSubscription = await fauna.query(
-          db.Get(
-            db.Intersection([
-              db.Match(
-                db.Index('subscription_by_user_ref'),
-                db.Select(
+          q.Get(
+            q.Intersection([
+              q.Match(
+                q.Index('subscription_by_user_ref'),
+                q.Select(
                   'ref',
-                  db.Get(
-                    db.Match(
-                      db.Index('user_by_email'),
-                      db.Casefold(session.user.email)
+                  q.Get(
+                    q.Match(
+                      q.Index('user_by_email'),
+                      q.Casefold(session.user.email)
                     )
                   )
                 )
               ),
-              db.Match(
-                db.Index('subscription_by_status'),
+              q.Match(
+                q.Index('subscription_by_status'),
                 'active'
               ) 
             ])
@@ -49,32 +49,33 @@ export default NextAuth({
     async signIn(user, account, profile) {
       const { email } = user;
 
-
       try {
+
         await fauna.query(
-          db.If(
-            db.Not(
-              db.Exists(
-                db.Match(
-                  db.Index('user_by_email'),
-                  db.Casefold(email)
+          q.If(
+            q.Not(
+              q.Exists(
+                q.Match(
+                  q.Index('user_by_email'),
+                  q.Casefold(email)
                 )
               )
             ),
-            db.Create(
-              db.Collection('users'),
+            q.Create(
+              q.Collection('users'),
               { data: { email } }
             ),
-            db.Get(
-              db.Match(
-                db.Index('user_by_email'),
-                db.Casefold(email)
+            q.Get(
+              q.Match(
+                q.Index('user_by_email'),
+                q.Casefold(email)
               )
             )
           )
         )
   
         return true;
+        
       } catch {
         return false;
       } 

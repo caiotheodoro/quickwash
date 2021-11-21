@@ -37,20 +37,23 @@ const TransactionsContext = createContext<TransactionsContextData>(
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const [transactions, setTransactions] = useState<TransactionsTableProps[]>([]);
+    const [soma,setSoma] = useState(0);
+/*
     useEffect(() => {
         api.get("transactions")
             .then(response => setTransactions(response.data.transactions));
-    }, []);
+    }, []);*/
 
     async function createTransaction(transactionInput: TransactionInput) {
 
-        const response = await api.post('/transactions', {...transactionInput, createdAt: new Date().toISOString()});
-        const transct : TransactionsTableProps = response.data.transaction;
+        const response = await api.post('/subscribe', {...transactionInput, createdAt: new Date().toISOString()});
+        
+       // const transct : TransactionsTableProps = response.data.transaction;
 
-        setTransactions([
-            ...transactions,
-            transct
-        ]);
+      //  setTransactions([
+       //     ...transactions,
+       //     transct
+       // ]);
     }
 
     return (

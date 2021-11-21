@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.primary.light,
             border: 0,
             padding: '0 1.5rem',
-        
+            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -49,15 +49,15 @@ export function SignInButton() {
     const [session ] = useSession();
     const classes = useStyles();
 
-    const handleOut = async () => {
-        await signOut();
+    function handleOut () {
+        signOut();
         router.push('/');
     }
 
     return session ? (
         <button type="button"
             className={classes.signIn}
-            onClick={() => handleOut}>
+            onClick={handleOut}>
             <FaGoogle color="#04d361" style={{marginRight: '1rem'}} />
             {session.user?.name}
             <FiX  className={classes.closeIcon} />

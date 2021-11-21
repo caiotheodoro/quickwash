@@ -1,7 +1,6 @@
 import { useState, FormEvent } from 'react';
 
 import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
-
 import { useTransactions } from '../../hooks/useTransactions';
 import { createStyles, makeStyles } from '@mui/styles';
 import { Theme, Input, Typography, TextField, Dialog, Button, Autocomplete, DialogContent, DialogActions, ButtonGroup, DialogTitle, DialogContentText } from '@mui/material';
@@ -85,7 +84,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     const { createTransaction } = useTransactions();
     const classes = useStyles();
     const [inputValue, setInputValue] = useState<string>('');
-    const [sessions] = useSession();
+    const [session] = useSession();
     const router = useRouter();
 
     const [amount, setAmount] = useState(0);
@@ -100,10 +99,30 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     const [coupon, setCoupon] = useState('');
 
     async function handleCreateNewTransaction(e: FormEvent) {
+
         e.preventDefault();
 
+        if (!session) {
+            signIn('google');
+            return
+        }
 
-        await createTransaction({
+     
+        
+        try {
+            const response = await api.post('/subscribe')
+
+            const { sessionId } = response.data;
+            const stripe = await getStripeJs()
+
+            await stripe.redirectToCheckout({ sessionId })
+            
+        } catch (err) {
+            console.log(err)
+            alert(err.message);
+        }
+
+    /*    await createTransaction({
             type,
             vehicle,
             amount,
@@ -113,7 +132,8 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
             coupon,
             payment,
             vehicleType,
-        });
+        });*/
+
 
         setVehicle('');
         setAmount(0);
