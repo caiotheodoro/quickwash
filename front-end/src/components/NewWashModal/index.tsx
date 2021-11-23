@@ -156,18 +156,20 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
                                 placeholder="Modelo"
+                                id="Modelo"
                                 value={vehicle}
                                 onChange={e => setVehicle(e.target.value)}
                             />
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
                                 placeholder="Placa"
+                                id="Placa"
                                 value={plate}
                                 onChange={e => setPlate(e.target.value)}
                             />
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
-                                <Button color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} > Normal</Button>
-                                <Button color={type != 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Premium')} >Premium</Button>
+                                <Button id="Comum" color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} > Normal</Button>
+                                <Button id="Premium" color={type != 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Premium')} >Premium</Button>
                             </ButtonGroup>
                             <Typography className={classes.title}>
                                 Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
@@ -186,16 +188,18 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
                                 placeholder="Observações"
+                                id="Observacao"
                                 value={observation}
                                 onChange={e => setObservation(e.target.value)}
                             />
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
-                                <Button color={payment == 'cash' ? "warning" : "secondary"} onClick={() => setPayment('cash')} > Dinheiro</Button>
-                                <Button color={payment == 'card' ? "warning" : "secondary"} onClick={() => setPayment('card')} >Cartão</Button>
+                                <Button color={payment == 'cash' ? "warning" : "secondary"} id="Dinheiro" onClick={() => setPayment('cash')} > Dinheiro</Button>
+                                <Button color={payment == 'card' ? "warning" : "secondary"} id="Cartao" onClick={() => setPayment('card')} >Cartão</Button>
                             </ButtonGroup>
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
                                 placeholder="Cupom de desconto"
+                                id="Cupom"
                                 value={coupon}
                                 onChange={e => setCoupon(e.target.value)}
                             />
