@@ -1,7 +1,6 @@
 import { useState, FormEvent } from 'react';
 
 import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
-
 import { useTransactions } from '../../hooks/useTransactions';
 import { createStyles, makeStyles } from '@mui/styles';
 import { Theme, Input, Typography, TextField, Dialog, Button, Autocomplete, DialogContent, DialogActions, ButtonGroup, DialogTitle, DialogContentText } from '@mui/material';
@@ -85,35 +84,73 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     const { createTransaction } = useTransactions();
     const classes = useStyles();
     const [inputValue, setInputValue] = useState<string>('');
-    const [sessions] = useSession();
+    const [session] = useSession();
     const router = useRouter();
 
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState(50);
     const [type, setType] = useState('Comum');
     const [scheduleDate, setScheduleDate] = useState<Date>(new Date('2021-11-02T00:00:00.000Z'));
     const [vehicle, setVehicle] = useState('');
     const [observation, setObservation] = useState('');
     const [plate, setPlate] = useState('');
-    const [price, setPrice] = useState('price_1JstmdDqVzUtyqwcfb0fiV98');
+    const [price, setPrice] = useState('price_1JyP5fDqVzUtyqwcK7kJZdu8');
     const [payment, setPayment] = useState<'cash' | 'card'>('cash');
     const [vehicleType, setVehicleType] = useState<'Carro' | 'Moto' | 'Caminhão' | 'Outros'>('Carro');
     const [coupon, setCoupon] = useState('');
 
     async function handleCreateNewTransaction(e: FormEvent) {
+
         e.preventDefault();
 
+        if (!session) {
+            signIn('google');
+            return
+        }
 
-        await createTransaction({
-            type,
-            vehicle,
-            amount,
-            plate,
-            observation,
-            scheduleDate,
-            coupon,
-            payment,
-            vehicleType,
-        });
+     
+        
+        try {
+
+            //const response = await api.post('/subscribe')
+
+            const response = await api.post('/subscribe', {type,
+                vehicle,
+                amount,
+                plate,
+                observation,
+                scheduleDate,
+                coupon,
+                payment,
+                price,
+                vehicleType, createdAt: new Date().toISOString()});
+
+          /*  await createTransaction({
+                type,
+                vehicle,
+                amount,
+                plate,
+                observation,
+                scheduleDate,
+                coupon,
+                payment,
+                vehicleType,
+            });
+            */
+
+
+
+            const { sessionId } = response.data;
+            const stripe = await getStripeJs()
+            console.log("stripe", stripe);
+            await stripe.redirectToCheckout({ sessionId })
+            
+        } catch (err) {
+            console.log(err)
+            alert(err.message);
+        }
+
+        
+
 
         setVehicle('');
         setAmount(0);
@@ -124,7 +161,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     async function handleTypeChange(type: string) {
         setType(type);
         type === 'Comum' ? setAmount(50) : setAmount(75);
-        setPrice(type === 'Comum' ? 'price_1JstmdDqVzUtyqwcfb0fiV98' : 'price_1JstmdDqVzUtyqwcpGu1Qkz5');
+        setPrice(type === 'Comum' ? 'price_1JyP5fDqVzUtyqwcK7kJZdu8' : 'price_1JyP5fDqVzUtyqwcPBqfPQJf');
 
 
     }
