@@ -1,9 +1,11 @@
 
 import { useTransactions } from "../../hooks/useTransactions";
 import { createStyles, makeStyles } from "@mui/styles";
-import { Theme } from "@mui/material";
+import { Button, Theme } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
+import { CouponModal } from "../CouponModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,6 +55,8 @@ interface Props {
 export function Summary() {
 
     const { retrieveTransactions } = useTransactions();
+    const [isOpen, setIsOpen] = useState(false);
+    const { transactions } = useTransactions();
     const classes = useStyles();
     const [summary, setSummary] = useState<Props>({} as Props);
 
@@ -75,6 +79,13 @@ export function Summary() {
 
     } , []);
 
+    function handleOpenNewTransactionModal() {
+        setIsOpen(true);
+      }
+      function handleCloseNewTransactionModal() {
+        setIsOpen(false);
+      }
+
     return (
         <Box className={classes.container}>
             <div className={classes.content}>
@@ -94,7 +105,9 @@ export function Summary() {
                         <p>Cupons</p>
                     </Box>
                     <Box className={classes.strong}>
-                        QYTEW3
+                        <Button variant="contained" endIcon={<SendIcon />} onClick={handleOpenNewTransactionModal}>
+                            Listar Cupons
+                        </Button>
                     </Box>
                 </div>
             </div>
@@ -105,6 +118,7 @@ export function Summary() {
                 <Box className={classes.strong}>{3}
                 </Box>
             </div>
+            <CouponModal isOpen={isOpen} onRequestClose={handleCloseNewTransactionModal}/>
         </Box>
     );
 }
