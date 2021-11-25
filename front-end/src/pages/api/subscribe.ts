@@ -13,11 +13,25 @@ type User = {
     }
 }
 
+
+interface Get {
+    data: {
+      data: {
+        amount: number;
+        vehicle: string;
+        type: string,
+        createdAt: Date,
+        plate: string,
+        observation: string,
+        scheduleDate: Date,
+        payment: string,
+      }
+    }[]
+  }
+
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
         const session = await getSession({ req });
-        console.log("req", req.body)
-        console.log("session", session)
 
         const user = await fauna.query<User>(
             q.Get(
@@ -84,7 +98,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (req.method === 'GET') {
 
         const session = await getSession({ req });
-        console.log("req", req)
 
         const user = await fauna.query<User>(
             q.Get(
@@ -117,12 +130,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         }
 
-        await fauna.query(
-            q.Get(q.Ref(q.Collection('subscriptions'), '315835746451718211'))
+        const dados = await fauna.query<Get>(
+            q.Map(
+                q.Paginate(
+                  q.Match(q.Index("subscription_by_user_ref"), q.Ref(q.Collection("users"), user.ref.id)),
+          
+                ),
+                q.Lambda("X", q.Get(q.Var("X")))
+              ),
         )
-            .then((res) => console.log(res))
 
-
+            return res.status(200).json({
+                dados: dados.data,
+            });
     } else {
         res.setHeader('Allow', 'POST');
         res.status(405).end(`Method Not Allowed`);
