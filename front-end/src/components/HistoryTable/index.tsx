@@ -48,21 +48,33 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     })
 );
+interface Get {
+        data: {
+          id: number;
+          amount: number;
+          vehicle: string;
+          type: string;
+          createdAt: Date;
+          plate: string;
+          observation: string;
+          scheduleDate: Date;
+          payment: string;
+        }
+}
 
 export function TransactionsTable() {
     const classes = useStyles();
-    const { retrieveTransaction } = useTransactions();
-    const [transactions,setTransactions ] = useState();
+    const [transactions,setTransactions ] = useState<Get[]>([] as Get[]);
+    const {retrieveTransactions} = useTransactions();
 
     useEffect(() => {
-        (
-            async () => {
-                const response = await api.get('/subscribe')
-                console.log(response);
-            }
-        )
-    
-    }, []);
+        (   async () => {
+            const data = await retrieveTransactions();
+            setTransactions(data.dados);
+        })();
+
+
+    } , []);
     
     return (
         <Box className={classes.container}>
@@ -77,27 +89,27 @@ export function TransactionsTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {/*transactions.map(transaction => (
-                        <TableRow key={transaction.id}>
-                            <TableCell>{transaction.vehicle + ' - ' + transaction.plate}</TableCell>
-                            <TableCell>{transaction.type}</TableCell>
-                            <TableCell className={transaction.type}>
+                    {transactions?.map(transaction => (
+                        <TableRow key={transaction.data.id}>
+                            <TableCell>{transaction.data.vehicle + ' - ' + transaction.data.plate}</TableCell>
+                            <TableCell>{transaction.data.type}</TableCell>
+                            <TableCell className={transaction.data.type}>
                                 {new Intl.NumberFormat('pt-BR',
                                     {
                                         style: 'currency',
                                         currency: 'BRL'
-                                    }).format(transaction.amount) + ' - ' +  (transaction.payment === 'cash' ? 'Dinheiro' : 'Cartão') }
+                                    }).format(transaction.data.amount) + ' - ' +  (transaction.data.payment === 'cash' ? 'Dinheiro' : 'Cartão') }
 
                             </TableCell>
                             <TableCell> 
                             { 
-                                new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.scheduleDate))
+                                new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.data.scheduleDate))
                             }
                            
                             </TableCell>
-                            <TableCell>  {new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.createdAt))}</TableCell>
+                            <TableCell>  {new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.data.createdAt))}</TableCell>
                         </TableRow>
-                        ))*/}
+                        ))}
                 
                 </TableBody>
             </Table>

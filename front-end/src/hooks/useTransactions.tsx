@@ -18,7 +18,22 @@ interface TransactionsTableProps {
 
 }
 
+interface Get {
+      dados: any;
+      data: {
+        amount: number;
+        vehicle: string;
+        type: string,
+        createdAt: Date,
+        plate: string,
+        observation: string,
+        scheduleDate: Date,
+        payment: string,
+      }[]
 
+  }
+
+  
 
 type TransactionInput = Omit<TransactionsTableProps, "id" | 'createdAt'>;
 
@@ -30,7 +45,7 @@ interface TransactionsProviderProps {
 interface TransactionsContextData {
     transactions: TransactionsTableProps[];
     createTransaction: (transaction: TransactionInput) => Promise<void>;
-    retrieveTransaction: (userId: string) => Promise<void>;
+    retrieveTransactions: () => Promise<Get>;
 }
 
 const TransactionsContext = createContext<TransactionsContextData>(
@@ -41,6 +56,14 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const [transactions, setTransactions] = useState<TransactionsTableProps[]>([]);
     const [soma,setSoma] = useState(0);
 
+    useEffect(() => {
+        (async () => {
+            const response = await api.get('/subscribe');
+            console.log(response.data);
+       
+            setTransactions(response.data);
+        })();
+    }, []);
 
 
     async function createTransaction(transactionInput: TransactionInput) {
@@ -48,7 +71,9 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         
         const response = await api.post('/subscribe', {...transactionInput, createdAt: new Date().toISOString()});
         
-        console.log(response);
+        const responseRetrieve = await api.get('/subscribe');
+       
+        setTransactions(responseRetrieve.data);
        // const transct : TransactionsTableProps = response.data.transaction;
 
       //  setTransactions([
@@ -57,16 +82,23 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
        // ]);
     }
 
-    async function retrieveTransaction(userId: string) {
+    async function retrieveTransactions() {
 
-        const response = await api.get('/subscribe');
-        console.log(response);
-        console.log(userId)
-  
+        
+        
+        const responseRetrieve = await api.get('/subscribe');
+       
+        return responseRetrieve.data;
+       // const transct : TransactionsTableProps = response.data.transaction;
+
+      //  setTransactions([
+       //     ...transactions,
+       //     transct
+       // ]);
     }
 
     return (
-        <TransactionsContext.Provider value={{ transactions, createTransaction, retrieveTransaction }}>
+        <TransactionsContext.Provider value={{ transactions, createTransaction,retrieveTransactions }}>
             {children}
         </TransactionsContext.Provider>
     );

@@ -3,6 +3,7 @@ import { useTransactions } from "../../hooks/useTransactions";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/material";
 import { Box } from "@mui/system";
+import { useEffect, useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,20 +43,37 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
+
+
+
+interface Props {
+    deposits: number;
+    total: number;
+}
 export function Summary() {
 
-    const { transactions } = useTransactions();
+    const { retrieveTransactions } = useTransactions();
     const classes = useStyles();
+    const [summary, setSummary] = useState<Props>({} as Props);
 
-    const summary = transactions.reduce((acc, transaction) => {
+    useEffect(() => {
+        (   async () => {
+            const data = await retrieveTransactions();
+            const summary = data.dados.reduce((acc, transaction) => {
 
-        acc.deposits += transaction.amount;
-        acc.total += transaction.amount;
-        return acc;
-    }, {
-        deposits: 0,
-        total: 0
-    });
+                acc.deposits += Number(transaction.data.amount);
+                acc.total += Number(transaction.data.amount);
+                return acc;
+            }, {
+                deposits: 0,
+                total: 0
+            });
+            setSummary(summary);
+
+        })();
+
+
+    } , []);
 
     return (
         <Box className={classes.container}>
@@ -63,7 +81,7 @@ export function Summary() {
                 <Box className={classes.header}>
                     <p>Gastos</p>
                 </Box>
-                <Box className={classes.strong}>{new Intl.NumberFormat('pt-BR',
+                <Box className={classes.strong}>{ new Intl.NumberFormat('pt-BR',
                     {
                         style: 'currency',
                         currency: 'BRL'
