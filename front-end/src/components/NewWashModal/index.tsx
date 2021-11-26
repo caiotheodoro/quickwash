@@ -219,7 +219,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                     setScheduleDate(newValue);
                                 }}
 
-
+                                minDate={new Date()}
                                 renderInput={(params) => <TextField {...params} className={classes.autocomplete} />}
                             />
                             <Input
