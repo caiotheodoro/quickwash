@@ -6,6 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { CouponModal } from "../CouponModal";
+import { useSession } from "next-auth/client";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -59,6 +60,7 @@ export function Summary() {
     const { transactions } = useTransactions();
     const classes = useStyles();
     const [summary, setSummary] = useState<Props>({} as Props);
+    const [session ] = useSession();
 
     useEffect(() => {
         (   async () => {
@@ -113,9 +115,9 @@ export function Summary() {
             </div>
             <div className={classes.cars}>
                 <Box className={classes.header}>
-                    <p>Carros cadastrados</p>
+                    <p>Bem vindo,  </p>
                 </Box>
-                <Box className={classes.strong}>{3}
+                <Box className={classes.strong}>{session?.user?.name}
                 </Box>
             </div>
             <CouponModal isOpen={isOpen} onRequestClose={handleCloseNewTransactionModal}/>

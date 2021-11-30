@@ -79,7 +79,7 @@ export async function saveSubscription(
     ),
       await fauna.query(
         q.If(
-          q.GTE(aux, 199),
+          q.GTE(aux, 149),
           q.Create(
             q.Collection("coupons"),
             { data: { coupon: subscription.id, userId: userRef } }

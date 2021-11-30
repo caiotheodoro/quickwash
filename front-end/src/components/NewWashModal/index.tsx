@@ -1,9 +1,9 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 
 import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
 import { useTransactions } from '../../hooks/useTransactions';
 import { createStyles, makeStyles } from '@mui/styles';
-import { Theme, Input, Typography, TextField, Dialog, Button, Autocomplete, DialogContent, DialogActions, ButtonGroup, DialogTitle, DialogContentText } from '@mui/material';
+import { Theme, Input, Typography, TextField, Dialog, Button, Autocomplete, DialogContent, DialogActions, ButtonGroup, DialogTitle, DialogContentText, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import { Box } from '@mui/system';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 const options = ['Carro', 'Moto', 'Caminhão', 'Outros'];
@@ -76,7 +76,15 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
+interface coupon {
+    dados(dados: any);
 
+    data: {
+        coupon: string;
+    }
+
+
+}
 
 
 
@@ -89,15 +97,15 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
 
     const [amount, setAmount] = useState(50);
     const [type, setType] = useState('Comum');
-    const [scheduleDate, setScheduleDate] = useState<Date>(new Date('2021-11-02T00:00:00.000Z'));
+    const [scheduleDate, setScheduleDate] = useState<Date>(new Date());
     const [vehicle, setVehicle] = useState('');
     const [observation, setObservation] = useState('');
     const [plate, setPlate] = useState('');
     const [price, setPrice] = useState('price_1JyP5fDqVzUtyqwcK7kJZdu8');
     const [payment, setPayment] = useState<'cash' | 'card'>('cash');
-    const [vehicleType, setVehicleType] = useState<'Carro' | 'Moto' | 'Caminhão' | 'Outros'>('Carro');
+    const [vehicleType, setVehicleType] = useState<string>('Carro');
+    const [coupons, setCoupons] = useState<coupon[]>([] as coupon[]);
     const [coupon, setCoupon] = useState('');
-
     async function handleCreateNewTransaction(e: FormEvent) {
 
         e.preventDefault();
@@ -107,24 +115,13 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
             return
         }
 
-     
-        
+
+
         try {
 
             //const response = await api.post('/subscribe')
 
-            const response = await api.post('/subscribe', {type,
-                vehicle,
-                amount,
-                plate,
-                observation,
-                scheduleDate,
-                coupon,
-                payment,
-                price,
-                vehicleType, createdAt: new Date().toISOString()});
-
-          /*  await createTransaction({
+            const response = await api.post('/subscribe', {
                 type,
                 vehicle,
                 amount,
@@ -133,23 +130,36 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                 scheduleDate,
                 coupon,
                 payment,
-                vehicleType,
+                price,
+                vehicleType, createdAt: new Date().toISOString()
             });
-            */
+
+            /*  await createTransaction({
+                  type,
+                  vehicle,
+                  amount,
+                  plate,
+                  observation,
+                  scheduleDate,
+                  coupon,
+                  payment,
+                  vehicleType,
+              });
+              */
 
 
 
-            const { sessionId } = response.data;
+            const { sessionId } : any = response.data;
             const stripe = await getStripeJs()
             console.log("stripe", stripe);
             await stripe.redirectToCheckout({ sessionId })
-            
+
         } catch (err) {
             console.log(err)
             alert(err.message);
         }
 
-        
+
 
 
         setVehicle('');
@@ -161,11 +171,28 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     async function handleTypeChange(type: string) {
         setType(type);
         type === 'Comum' ? setAmount(50) : setAmount(75);
+        
         setPrice(type === 'Comum' ? 'price_1JyP5fDqVzUtyqwcK7kJZdu8' : 'price_1JyP5fDqVzUtyqwcPBqfPQJf');
+        
 
+    }
+    
+    function handleChangeCoupon(e: any, value: any) {
+        setCoupon(value);
+        if(coupon != ''){
+            setPrice('price_1K1ZWWDqVzUtyqwcj8CS7hgj');
+            setAmount(0);
+        }
 
     }
 
+    useEffect(() => {
+        (async () => {
+            const response = await api.get<coupon>('/coupons');
+            setCoupons(response.data.dados);
+        })();
+        
+    }, []);
 
     return (
         <div>
@@ -179,7 +206,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                         <Box >
                             <Autocomplete
                                 value={vehicleType}
-                                onChange={(inputValue) => {
+                                onChange={(event, inputValue) => {
                                     setVehicleType(inputValue);
                                 }}
                                 inputValue={inputValue}
@@ -189,6 +216,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 }}
                                 options={options}
                                 renderInput={(params) => <TextField {...params} placeholder="Tipo de veículo" sx={{ color: '#000' }} />}
+
                             />
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
@@ -196,6 +224,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 id="Modelo"
                                 value={vehicle}
                                 onChange={e => setVehicle(e.target.value)}
+                                required
                             />
                             <Input
                                 className={classes.input + ' ' + classes.inputs}
@@ -203,6 +232,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 id="Placa"
                                 value={plate}
                                 onChange={e => setPlate(e.target.value)}
+                                required
                             />
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
                                 <Button id="Comum" color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} > Normal</Button>
@@ -214,7 +244,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                             <DesktopDateTimePicker
                                 value={scheduleDate}
                                 views={['month', 'day', 'hours']}
-                                className={ classes.inputs + '' + classes.autocomplete}
+                                className={classes.inputs + '' + classes.autocomplete}
                                 onChange={(newValue) => {
                                     setScheduleDate(newValue);
                                 }}
@@ -233,13 +263,25 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 <Button color={payment == 'cash' ? "warning" : "secondary"} id="Dinheiro" onClick={() => setPayment('cash')} > Dinheiro</Button>
                                 <Button color={payment == 'card' ? "warning" : "secondary"} id="Cartao" onClick={() => setPayment('card')} >Cartão</Button>
                             </ButtonGroup>
-                            <Input
-                                className={classes.input + ' ' + classes.inputs}
-                                placeholder="Cupom de desconto"
-                                id="Cupom"
-                                value={coupon}
-                                onChange={e => setCoupon(e.target.value)}
-                            />
+                        
+                                <Select
+                                 className={classes.input + ' ' + classes.inputs}
+                                    labelId="demo-simple-select-helper-label"
+                                    id="demo-simple-select-helper"
+                                    value={coupon}
+                                    label="Age"
+                                    onChange={e => handleChangeCoupon(e, e.target.value)}
+                                >
+                                       <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    { coupons.map((coupon: coupon) => (
+                                        <MenuItem value={coupon.data.coupon}>
+                                            {coupon.data.coupon}
+                                        </MenuItem>
+                                    ))}
+                          
+                                </Select>
                         </Box>
                     </DialogContent>
                     <DialogActions className={classes.dialog}>
