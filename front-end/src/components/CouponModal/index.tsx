@@ -4,7 +4,8 @@ import { Dialog, Button, DialogContent, DialogActions, ButtonGroup, DialogTitle,
 import { Table, TableBody, TableCell, TableHead, TableRow, Theme, Box } from "@mui/material";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-
+import { useState, useEffect } from 'react';
+import { api } from '../../services/api';
 interface NewTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
@@ -25,13 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
         },
         container: {
+            marginTop: '2rem',
         },
         table: {
             width: '100%',
             borderSpacing: '0.5rem',
         },
         th: {
-            color: theme.palette.text.primary,
+            color: theme.palette.background.default,
             fontWeight: 400,
             padding: '1rem 2rem',
             textAlign: 'left',
@@ -56,13 +58,34 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.background.default,
             backgroundColor: theme.palette.primary.dark,
         },
+        text: {
+            color: theme.palette.background.default,
+        },
     })
 );
 
+interface coupon {
+    dados(dados: any);
+
+    data: {
+        coupon: string;
+    }
+
+
+}
 
 export function CouponModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
     const { createTransaction } = useTransactions();
     const classes = useStyles();
+    const [coupons, setCoupons] = useState<coupon[]>([] as coupon[]);
+
+
+    useEffect(() => {
+        (async () => {
+            const response = await api.get<coupon>('/coupons');
+            setCoupons(response.data.dados);
+        })();
+    }, []);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -76,15 +99,16 @@ export function CouponModal({ isOpen, onRequestClose }: NewTransactionModalProps
                         <Table className={classes.table}>
                             <TableHead className={classes.th}>
                                 <TableRow>
-                                    <TableCell>Cupom</TableCell>
-                                    <TableCell>Data de Validade</TableCell>
+                                    <TableCell className={classes.text}>Cupom</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                    <TableRow>
-                                        <TableCell> xyward </TableCell>
-                                        <TableCell>  {new Intl.DateTimeFormat('pt-BR').format(new Date())}</TableCell>
-                                    </TableRow>
+                                {
+                                    coupons.map((coupon: coupon) => (
+                                        <TableRow>
+                                            <TableCell className={classes.text}> {coupon.data.coupon} </TableCell>
+                                        </TableRow>
+                                    ))}
                             </TableBody>
                         </Table>
                     </Box>
@@ -93,4 +117,3 @@ export function CouponModal({ isOpen, onRequestClose }: NewTransactionModalProps
         </LocalizationProvider>
     );
 }
-
