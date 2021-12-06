@@ -2,14 +2,12 @@ import * as React from 'react';
 import ProductCategories from '../components/Views/ProductCategories';
 import ProductHowItWorks from '../components/Views/ProductHowItWorks';
 import ServiceAddress from '../components/Views/ServiceAddress';
-import withRoot from '../components/withRoot';
 import Head from 'next/head'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer';
 import { createStyles, makeStyles } from '@mui/styles'
 import { Theme } from '@mui/material'
-import { GetServerSideProps, GetStaticProps } from "next";
-import { SubscribeButton } from "../components/SubscribeButton";
+import { GetStaticProps } from "next";
 import { stripe } from "../services/stripe";
 interface HomeProps {
   product: {

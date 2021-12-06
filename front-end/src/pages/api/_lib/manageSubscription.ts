@@ -10,6 +10,12 @@ interface Amount {
   }[]
 }
 
+interface CouponProps {
+  data: {
+    
+  }
+}
+
 export async function saveSubscription(
   subscriptionId: string,
   customerId: string,
@@ -48,6 +54,15 @@ export async function saveSubscription(
     ),
   )
 
+  const hasCoupon = await fauna.query<CouponProps>(
+    q.Map(
+      q.Paginate(
+        q.Match(q.Index("coupon_by_user_id"), userRef),
+      ),
+      q.Lambda("X", q.Get(q.Var("X")))
+    ),
+  )
+
   const subscription = await stripe.subscriptions.retrieve(subscriptionId)
 
   let aux = 0
@@ -79,10 +94,28 @@ export async function saveSubscription(
     ),
       await fauna.query(
         q.If(
-          q.GTE(aux, 149),
+          q.And(
+            q.GTE(aux, 149),
+            q.Not(
+              hasCoupon.data.length !== 0 ? true : false
+            ),
+          ),
           q.Create(
             q.Collection("coupons"),
             { data: { coupon: subscription.id, userId: userRef } }
+          ),
+          false
+        )
+      ),
+      
+      await fauna.query(
+        q.If(
+          subscription.metadata.coupon != "" ? true : false,
+          q.Delete(
+            q.Map(
+              q.Paginate(q.Match(q.Index("coupon_by_user_id"), userRef)),
+              q.Lambda("X", q.Delete(q.Var("X")))
+            )
           ),
           false
         )
@@ -95,8 +128,8 @@ export async function saveSubscription(
           "ref",
           q.Get(
             q.Match(
-              q.Index("subscription_by_id"),
-              subscriptionId,
+              q.Index("coupon_by_user_id"),
+              userRef,
             )
           ),
         ),

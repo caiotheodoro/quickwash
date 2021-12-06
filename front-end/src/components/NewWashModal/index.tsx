@@ -179,7 +179,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
     
     function handleChangeCoupon(e: any, value: any) {
         setCoupon(value);
-        if(coupon != ''){
+        if(value != ''){
             setPrice('price_1K1ZWWDqVzUtyqwcj8CS7hgj');
             setAmount(0);
         }
