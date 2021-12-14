@@ -78,7 +78,7 @@ export function HeaderDashboard({ onOpenNewTransactionModal }: HeaderProps) {
         </Link>
         <Box className={classes.rightside} >
           <SignInButton />
-        <Button type="button" style={{marginLeft: '1rem', backgroundColor: theme.palette.primary.light, color: theme.palette.background.default}} className={classes.signIn} onClick={onOpenNewTransactionModal}>
+        <Button type="button" id='newWash' style={{marginLeft: '1rem', backgroundColor: theme.palette.primary.light, color: theme.palette.background.default}} className={classes.signIn} onClick={onOpenNewTransactionModal}>
           Nova Lavagem
         </Button>
         </Box>

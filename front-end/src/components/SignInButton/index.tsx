@@ -2,7 +2,7 @@ import { FaGithub, FaGoogle } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 import { signIn, signOut, useSession } from 'next-auth/client'
 import { createStyles, makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
+import { Theme, Button } from '@mui/material';
 import { useEffect } from 'react';
 import router from 'next/router';
 
@@ -55,19 +55,26 @@ export function SignInButton() {
     }
 
     return session ? (
-        <button type="button"
-            className={classes.signIn}
-            onClick={handleOut}>
+        <div>
+        <Button type="button"
+        className={classes.signIn}
+        onClick={handleOut}>
+            
             <FaGoogle color="#04d361" style={{marginRight: '1rem'}} />
             {session.user?.name}
             <FiX  className={classes.closeIcon} />
-        </button>
+        </Button>
+        <input type="hidden" className="isLogged" value={'logged'} />
+        </div>
     ) : (
-        <button type="button"
+        <div id="loginBotao">
+        <Button type="button"
             onClick={() => signIn('google')}
             className={classes.signIn}>
             <FaGithub color="#04d361" style={{marginRight: '1rem'}} />
             Logar com o Google
-        </button>
+        </Button>
+        <input type="hidden" className="isLogged" value={'none'} />
+        </div>
     );
 }
