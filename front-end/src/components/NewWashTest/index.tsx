@@ -1,7 +1,6 @@
 import { useState, FormEvent, useEffect } from 'react';
 
 import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
-import { useTransactions } from '../../hooks/useTransactions';
 import { createStyles, makeStyles } from '@mui/styles';
 import { Theme, Input, Typography, TextField, Dialog, Button, Autocomplete, DialogContent, DialogActions, ButtonGroup, DialogTitle, DialogContentText, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import { Box } from '@mui/system';
@@ -9,10 +8,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 const options = ['Carro', 'Moto', 'Caminhão', 'Outros'];
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
-import { signIn, useSession } from 'next-auth/client';
 import { api } from '../../services/api';
 import { getStripeJs } from '../../services/stripe-js';
-import { useRouter } from 'next/router';
 interface NewTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
@@ -88,10 +85,9 @@ interface coupon {
 
 
 
-export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProps) {
+export function NewWashTest({ isOpen, onRequestClose }: NewTransactionModalProps) {
     const classes = useStyles();
     const [inputValue, setInputValue] = useState<string>('');
-    const [session] = useSession();
   
 
     const [amount, setAmount] = useState(50);
@@ -109,10 +105,6 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
 
         e.preventDefault();
 
-        if (!session) {
-            signIn('google');
-            return
-        }
 
 
 
@@ -120,23 +112,9 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
 
             //const response = await api.post('/subscribe')
 
-            const response = await api.post('/subscribe', {
-                type,
-                vehicle,
-                amount,
-                plate,
-                observation,
-                scheduleDate,
-                coupon,
-                payment,
-                price,
-                vehicleType, createdAt: new Date().toISOString()
-            });
-            console.log("response", response.data);
-            const { sessionId } : any = response.data;
+         
             const stripe = await getStripeJs()
-            console.log("stripe", stripe);
-            await stripe.redirectToCheckout({ sessionId })
+            await stripe.redirectToCheckout({ sessionId: 'teste' })
 
         } catch (err) {
             console.log(err)
@@ -170,13 +148,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
 
     }
 
-    useEffect(() => {
-        (async () => {
-            const response = await api.get<coupon>('/coupons');
-            setCoupons(response.data.dados);
-        })();
-
-    }, []);
+    
 
     return (
         <div>
@@ -189,6 +161,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                         </DialogContentText>
                         <Box >
                             <Autocomplete
+                                id= "vehicle"
                                 value={vehicleType}
                                 onChange={(event, inputValue) => {
                                     setVehicleType(inputValue);
@@ -221,6 +194,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
                                 <Button id="Comum" color={type == 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Comum')} > Normal</Button>
                                 <Button id="Premium" color={type != 'Comum' ? "warning" : "secondary"} onClick={() => handleTypeChange('Premium')} >Premium</Button>
+                                <input type="hidden" id="precoLavagem" value={type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}/>
                             </ButtonGroup>
                             <Typography className={classes.title}>
                                 Valor: {type == 'Comum' ? 'R$ 50,00' : 'R$ 75,00'}
@@ -232,7 +206,6 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                                 onChange={(newValue) => {
                                     setScheduleDate(newValue);
                                 }}
-
                                 minDate={new Date()}
                                 renderInput={(params) => <TextField {...params} className={classes.autocomplete} />}
                             />
@@ -246,12 +219,13 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                             <ButtonGroup disableElevation variant="contained" className={classes.inputs}>
                                 <Button color={payment == 'cash' ? "warning" : "secondary"} id="Dinheiro" onClick={() => setPayment('cash')} > Dinheiro</Button>
                                 <Button color={payment == 'card' ? "warning" : "secondary"} id="Cartao" onClick={() => setPayment('card')} >Cartão</Button>
+                                <input type="hidden" id="metodoPagamento" value={payment}/>
                             </ButtonGroup>
                         
                                 <Select
                                  className={classes.input + ' ' + classes.inputs}
                                     labelId="demo-simple-select-helper-label"
-                                    id="demo-simple-select-helper"
+                                    id="cupomSelector"
                                     value={coupon}
                                     label="Age"
                                     onChange={e => handleChangeCoupon(e, e.target.value)}
@@ -269,7 +243,7 @@ export function NewWashModal({ isOpen, onRequestClose }: NewTransactionModalProp
                         </Box>
                     </DialogContent>
                     <DialogActions className={classes.dialog}>
-                        <Button onClick={handleCreateNewTransaction}  color={"secondary"}>Realizar pagamento</Button>
+                        <Button onClick={handleCreateNewTransaction} color={"secondary"}>Realizar pagamento</Button>
                     </DialogActions>
                 </Dialog>
             </LocalizationProvider>

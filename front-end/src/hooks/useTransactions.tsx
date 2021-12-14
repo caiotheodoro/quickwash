@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { Children, createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { api } from "../services/api";
 
@@ -55,13 +56,16 @@ const TransactionsContext = createContext<TransactionsContextData>(
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
     const [transactions, setTransactions] = useState<TransactionsTableProps[]>([]);
     const [soma,setSoma] = useState(0);
-
+    
     useEffect(() => {
         (async () => {
-            const response = await api.get('/subscribe');
-            console.log(response.data);
-       
-            setTransactions(response.data);
+            var teste = 'teste'
+            if(location.href.split('/')[3] != teste){
+                const response = await api.get('/subscribe');
+                console.log(response.data);
+                setTransactions(response.data);
+
+        }
         })();
     }, []);
 

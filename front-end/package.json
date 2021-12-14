@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@emotion/react": "latest",
@@ -37,6 +38,7 @@
     "@types/node": "^16.10.2",
     "@types/prismic-dom": "^2.1.1",
     "@types/react": "^17.0.25",
+    "cypress": "^9.1.1",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "typescript": "^4.4.3"
